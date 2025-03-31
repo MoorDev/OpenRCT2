@@ -93,11 +93,8 @@ namespace OpenRCT2::Ui
         info = GetMapCoordinatesFromPos(
             screenCoords,
             EnumsToFlags(
-                ViewportInteractionItem::Entity, 
-                ViewportInteractionItem::Ride, 
-                ViewportInteractionItem::ParkEntrance,
-                ViewportInteractionItem::Banner
-            ));
+                ViewportInteractionItem::Entity, ViewportInteractionItem::Ride, ViewportInteractionItem::ParkEntrance,
+                ViewportInteractionItem::Banner));
         auto tileElement = info.interactionType != ViewportInteractionItem::Entity ? info.Element : nullptr;
         // Only valid when info.interactionType == ViewportInteractionItem::Entity, but can't assign nullptr without compiler
         // complaining

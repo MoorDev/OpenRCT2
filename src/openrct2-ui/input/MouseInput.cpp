@@ -491,7 +491,7 @@ namespace OpenRCT2
                                 {
                                     gTouchDragLast = screenCoords;
                                 }
-                                
+
                                 if (w != nullptr)
                                 {
                                     w->OnToolUp(gCurrentToolWidget.widget_index, screenCoords);
@@ -1254,7 +1254,7 @@ namespace OpenRCT2
                         // If Button is Construct Button(Ride),  s_touchover=false.
                         if (widget.tooltip == STR_RIDE_CONSTRUCTION_CONSTRUCT_SELECTED_SECTION_TIP)
                         {
-                            s_touchover=false;
+                            s_touchover = false;
                             w->OnToolDown(gCurrentToolWidget.widget_index, gTouchDragLast);
                             break;
                         }
