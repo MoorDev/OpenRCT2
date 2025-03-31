@@ -1247,6 +1247,34 @@ namespace OpenRCT2
                 // Non-interactive widget type
                 break;
             case WindowWidgetType::ImgBtn:
+                if (Config::Get().interface.TouchEnhancements)
+                {
+                    if (s_touchover)
+                    {
+                        // If Button is Construct Button(Ride),  s_touchover=false.
+                        if (widget.tooltip == STR_RIDE_CONSTRUCTION_CONSTRUCT_SELECTED_SECTION_TIP)
+                        {
+                            s_touchover=false;
+                            w->OnToolDown(gCurrentToolWidget.widget_index, gTouchDragLast);
+                            break;
+                        }
+                    }
+                }
+
+                if (!WidgetIsDisabled(*w, widgetIndex))
+                {
+                    OpenRCT2::Audio::Play(OpenRCT2::Audio::SoundId::Click1, 0, w->windowPos.x + widget.midX());
+                    // Set new cursor down widget
+                    gPressedWidget.window_classification = windowClass;
+                    gPressedWidget.window_number = windowNumber;
+                    gPressedWidget.widget_index = widgetIndex;
+                    gInputFlags.set(InputFlag::widgetPressed);
+                    _inputState = InputState::WidgetPressed;
+                    _clickRepeatTicks = gCurrentRealTimeTicks;
+                    windowMgr->InvalidateWidgetByNumber(windowClass, windowNumber, widgetIndex);
+                    w->OnMouseDown(widgetIndex);
+                }
+                break;
             case WindowWidgetType::ColourBtn:
             case WindowWidgetType::TrnBtn:
             case WindowWidgetType::Tab:
