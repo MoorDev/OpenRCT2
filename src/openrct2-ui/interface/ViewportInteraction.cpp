@@ -214,6 +214,8 @@ namespace OpenRCT2::Ui
     bool ViewportInteractionLeftClick(const ScreenCoordsXY& screenCoords)
     {
         auto info = ViewportInteractionGetItemLeft(screenCoords);
+        auto* windowMgr = GetWindowManager();
+        CoordsXYE tileElement;
 
         switch (info.interactionType)
         {
@@ -274,9 +276,17 @@ namespace OpenRCT2::Ui
             }
             case ViewportInteractionItem::Ride:
             {
-                auto intent = Intent(WD_TRACK);
-                intent.PutExtra(INTENT_EXTRA_TILE_ELEMENT, info.Element);
-                ContextOpenIntent(&intent);
+                if (windowMgr->FindByClass(WindowClass::RideConstruction) != nullptr)
+                {
+                    tileElement = { info.Loc, info.Element };
+                    RideModify(tileElement);
+                }
+                else
+                {
+                    auto intent = Intent(WD_TRACK);
+                    intent.PutExtra(INTENT_EXTRA_TILE_ELEMENT, info.Element);
+                    ContextOpenIntent(&intent);
+                }
                 return true;
             }
             case ViewportInteractionItem::ParkEntrance:
