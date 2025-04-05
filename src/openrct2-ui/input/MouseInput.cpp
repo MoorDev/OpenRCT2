@@ -1213,12 +1213,9 @@ namespace OpenRCT2
                                 if (gTouchDragLast.x >= screenCoords.x - 60 && gTouchDragLast.x <= screenCoords.x + 60
                                     && gTouchDragLast.y >= screenCoords.y - 60 && gTouchDragLast.y <= screenCoords.y + 60)
                                 {
-                                    if (w != windowMgr->FindByClass(WindowClass::RideConstruction))
-                                    {
-                                        s_touchover = false;
-                                        w->OnToolDown(gCurrentToolWidget.widget_index, gTouchDragLast);
-                                        // This is Bypass gTouchDrag bug.
-                                    }
+                                    s_touchover = false;
+                                    w->OnToolDown(gCurrentToolWidget.widget_index, gTouchDragLast);
+                                    // This is Bypass gTouchDrag bug.
                                 }
                                 else
                                 {
