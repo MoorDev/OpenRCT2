@@ -314,18 +314,18 @@ namespace OpenRCT2
                         }
                         else
                         {
-                            auto window_water = windowMgr->FindByClass(WindowClass::Water);
-                            auto window_land = windowMgr->FindByClass(WindowClass::Land);
                             // auto window_scenery = windowMgr->FindByClass(WindowClass::Scenery);
                             auto window_loadsave = windowMgr->FindByClass(WindowClass::Loadsave);
                             auto window_scenarioselect = windowMgr->FindByClass(WindowClass::ScenarioSelect);
+                            auto window_water = windowMgr->FindByClass(WindowClass::Water);
+                            auto window_land = windowMgr->FindByClass(WindowClass::Land);
                             // auto window_ridelist = windowMgr->FindByClass(WindowClass::RideList);
                             auto window_map = windowMgr->FindByClass(WindowClass::Map);
-                            if (window_water != nullptr
-                                || window_land != nullptr
-                                // || window_scenery != nullptr
-                                || window_loadsave != nullptr
+                            if (// window_scenery != nullptr
+                                window_loadsave != nullptr
                                 || window_scenarioselect != nullptr
+                                || window_water != nullptr
+                                || window_land != nullptr
                                 // || window_ridelist != nullptr
                                 || window_map != nullptr)
                             {
@@ -476,7 +476,19 @@ namespace OpenRCT2
                         {
                             break;
                         }
-
+                        /*if (Config::Get().interface.TouchEnhancements)
+                        {
+                            if (windowMgr->FindByClass(WindowClass::Water) != nullptr || windowMgr->FindByClass(WindowClass::Land) != nullptr)
+                            {
+                                if (gTouchDragLast.x >= screenCoords.x - 60 && gTouchDragLast.x <= screenCoords.x + 60
+                                    && gTouchDragLast.y >= screenCoords.y - 60 && gTouchDragLast.y <= screenCoords.y + 60)
+                                {
+                                    gTouchDragLast = screenCoords;
+                                    w->OnToolDrag(gCurrentToolWidget.widget_index, screenCoords);
+                                }
+                                break;
+                            }
+                        }*/
                         w->OnToolDrag(gCurrentToolWidget.widget_index, screenCoords);
                         break;
                     case MouseState::LeftRelease:
