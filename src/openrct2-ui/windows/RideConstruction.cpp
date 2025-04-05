@@ -132,6 +132,9 @@ namespace OpenRCT2::Ui::Windows
         WIDX_SEAT_ROTATION_ANGLE_SPINNER_UP,
         WIDX_SEAT_ROTATION_ANGLE_SPINNER_DOWN,
         WIDX_SIMULATE,
+        WIDX_ZSHIFT_UP,
+        WIDX_ZSHIFT_DOWN,
+        // WIDX_ZSHIFT 위젯 2개 추가
         WIDX_SPEED_GROUPBOX = WIDX_BANKING_GROUPBOX,
         WIDX_SPEED_SETTING_SPINNER = WIDX_BANK_LEFT,
         WIDX_SPEED_SETTING_SPINNER_UP = WIDX_BANK_STRAIGHT,
@@ -183,6 +186,8 @@ namespace OpenRCT2::Ui::Windows
         MakeWidget        ({118, 120}, {     89,  41}, WindowWidgetType::Groupbox, WindowColour::Primary  , STR_RIDE_CONSTRUCTION_SEAT_ROT                                                                        ),
         MakeSpinnerWidgets({123, 138}, {     58,  12}, WindowWidgetType::Spinner,  WindowColour::Secondary, 0,                                                STR_RIDE_CONSTRUCTION_SELECT_SEAT_ROTATION_ANGLE_TIP),
         MakeWidget        ({161, 338}, {     24,  24}, WindowWidgetType::FlatBtn,  WindowColour::Secondary, ImageId(SPR_G2_SIMULATE),                         STR_SIMULATE_RIDE_TIP                               ),
+        MakeWidget        ({ 52, 338}, {     24,  24}, WindowWidgetType::FlatBtn,  WindowColour::Secondary, ImageId(SPR_RIDE_CONSTRUCTION_VERTICAL_RISE),     STR_MOVE_SELECTED_ELEMENT_UP_TIP /*ZSHIFTUP관련 내용 추가*/ ),
+        MakeWidget        ({134, 338}, {     24,  24}, WindowWidgetType::FlatBtn,  WindowColour::Secondary, ImageId(SPR_RIDE_CONSTRUCTION_VERTICAL_DROP),     STR_MOVE_SELECTED_ELEMENT_DOWN_TIP   /*ZSHIFTDOWN관련 내용 추가*/ ),
     };
     // clang-format on
 
@@ -274,6 +279,7 @@ namespace OpenRCT2::Ui::Windows
             _autoRotatingShop = true;
             _trackPlaceCtrlState = false;
             _trackPlaceShiftState = false;
+            _trackPlaceShiftZ = 0;
         }
 
         void OnClose() override
@@ -453,7 +459,7 @@ namespace OpenRCT2::Ui::Windows
             if (_rideConstructionState == RideConstructionState::State0)
             {
                 disabledWidgets |= (1uLL << WIDX_CONSTRUCT) | (1uLL << WIDX_DEMOLISH) | (1uLL << WIDX_PREVIOUS_SECTION)
-                    | (1uLL << WIDX_NEXT_SECTION);
+                    | (1uLL << WIDX_NEXT_SECTION) | (1uLL << WIDX_ZSHIFT_DOWN) | (1uLL << WIDX_ZSHIFT_UP);
             }
             if (!_currentlySelectedTrack.isTrackType)
             {
@@ -1474,6 +1480,22 @@ namespace OpenRCT2::Ui::Windows
                         }
                     }
                     break;
+                    // TODO : ZSHIFT 관련 기능 구현할 곳
+                case WIDX_ZSHIFT_UP:
+                    _trackPlaceShiftZ += 16;
+                    if (_trackPlaceShiftZ >= 0)
+                    {
+                        ViewportSetVisibility(ViewportVisibility::UndergroundViewOff);
+                    }
+                    break;
+                case WIDX_ZSHIFT_DOWN:
+                    _trackPlaceShiftZ -= 16;
+                    if (_trackPlaceShiftZ < 0)
+                    {
+                        ViewportSetVisibility(ViewportVisibility::UndergroundViewOn);
+                    }
+                    break;
+                    
             }
         }
 
@@ -2022,11 +2044,15 @@ namespace OpenRCT2::Ui::Windows
                 & ((1uLL << WIDX_BACKGROUND) | (1uLL << WIDX_TITLE) | (1uLL << WIDX_CLOSE) | (1uLL << WIDX_DIRECTION_GROUPBOX)
                    | (1uLL << WIDX_SLOPE_GROUPBOX) | (1uLL << WIDX_BANKING_GROUPBOX) | (1uLL << WIDX_CONSTRUCT)
                    | (1uLL << WIDX_DEMOLISH) | (1uLL << WIDX_PREVIOUS_SECTION) | (1uLL << WIDX_NEXT_SECTION)
-                   | (1uLL << WIDX_ENTRANCE_EXIT_GROUPBOX) | (1uLL << WIDX_ENTRANCE) | (1uLL << WIDX_EXIT));
+                   | (1uLL << WIDX_ENTRANCE_EXIT_GROUPBOX) | (1uLL << WIDX_ENTRANCE) | (1uLL << WIDX_EXIT)
+                   | (1uLL << WIDX_ZSHIFT_UP) | (1uLL << WIDX_ZSHIFT_DOWN));
 
             widgets[WIDX_CONSTRUCT].type = WindowWidgetType::Empty;
             widgets[WIDX_DEMOLISH].type = WindowWidgetType::FlatBtn;
             widgets[WIDX_ROTATE].type = WindowWidgetType::Empty;
+            widgets[WIDX_ZSHIFT_UP].type = WindowWidgetType::Empty;
+            widgets[WIDX_ZSHIFT_DOWN].type = WindowWidgetType::Empty;
+
             if (rtd.HasFlag(RtdFlag::cannotHaveGaps))
             {
                 widgets[WIDX_PREVIOUS_SECTION].type = WindowWidgetType::Empty;
@@ -2043,10 +2069,14 @@ namespace OpenRCT2::Ui::Windows
                 case RideConstructionState::Front:
                     widgets[WIDX_CONSTRUCT].type = WindowWidgetType::ImgBtn;
                     widgets[WIDX_NEXT_SECTION].type = WindowWidgetType::Empty;
+                    widgets[WIDX_ZSHIFT_UP].type = WindowWidgetType::Empty;
+                    widgets[WIDX_ZSHIFT_DOWN].type = WindowWidgetType::Empty;
                     break;
                 case RideConstructionState::Back:
                     widgets[WIDX_CONSTRUCT].type = WindowWidgetType::ImgBtn;
                     widgets[WIDX_PREVIOUS_SECTION].type = WindowWidgetType::Empty;
+                    widgets[WIDX_ZSHIFT_UP].type = WindowWidgetType::Empty;
+                    widgets[WIDX_ZSHIFT_DOWN].type = WindowWidgetType::Empty;
                     break;
                 case RideConstructionState::Place:
                     widgets[WIDX_CONSTRUCT].type = WindowWidgetType::ImgBtn;
@@ -2054,11 +2084,15 @@ namespace OpenRCT2::Ui::Windows
                     widgets[WIDX_NEXT_SECTION].type = WindowWidgetType::Empty;
                     widgets[WIDX_PREVIOUS_SECTION].type = WindowWidgetType::Empty;
                     widgets[WIDX_ROTATE].type = WindowWidgetType::FlatBtn;
+                    widgets[WIDX_ZSHIFT_UP].type = WindowWidgetType::FlatBtn;
+                    widgets[WIDX_ZSHIFT_DOWN].type = WindowWidgetType::FlatBtn;
                     break;
                 case RideConstructionState::EntranceExit:
                     widgets[WIDX_DEMOLISH].type = WindowWidgetType::Empty;
                     widgets[WIDX_NEXT_SECTION].type = WindowWidgetType::Empty;
                     widgets[WIDX_PREVIOUS_SECTION].type = WindowWidgetType::Empty;
+                    widgets[WIDX_ZSHIFT_UP].type = WindowWidgetType::Empty;
+                    widgets[WIDX_ZSHIFT_DOWN].type = WindowWidgetType::Empty;
                     break;
                 default:
                     pressed_widgets = pressedWidgets;
@@ -3052,7 +3086,7 @@ namespace OpenRCT2::Ui::Windows
                 return std::nullopt;
 
             _trackPlaceZ = 0;
-            if (_trackPlaceShiftState)
+            if (_trackPlaceShiftState | Config::Get().interface.TouchEnhancements)
             {
                 auto surfaceElement = MapGetSurfaceElementAt(mapCoords);
                 if (surfaceElement == nullptr)

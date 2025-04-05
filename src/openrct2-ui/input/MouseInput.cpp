@@ -489,7 +489,9 @@ namespace OpenRCT2
                                     gCurrentToolWidget.window_classification, gCurrentToolWidget.window_number);
                                 if (Config::Get().interface.TouchEnhancements)
                                 {
-                                    gTouchDragLast = screenCoords;
+                                    if (widget->type == WindowWidgetType::Viewport) {
+                                        gTouchDragLast = screenCoords;
+                                    }
                                 }
 
                                 if (w != nullptr)
@@ -1211,8 +1213,12 @@ namespace OpenRCT2
                                 if (gTouchDragLast.x >= screenCoords.x - 60 && gTouchDragLast.x <= screenCoords.x + 60
                                     && gTouchDragLast.y >= screenCoords.y - 60 && gTouchDragLast.y <= screenCoords.y + 60)
                                 {
-                                    s_touchover = false;
-                                    w->OnToolDown(gCurrentToolWidget.widget_index, gTouchDragLast);
+                                    if (w != windowMgr->FindByClass(WindowClass::RideConstruction))
+                                    {
+                                        s_touchover = false;
+                                        w->OnToolDown(gCurrentToolWidget.widget_index, gTouchDragLast);
+                                        // This is Bypass gTouchDrag bug.
+                                    }
                                 }
                                 else
                                 {
