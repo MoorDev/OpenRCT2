@@ -1401,7 +1401,21 @@ namespace OpenRCT2
             if (w == nullptr)
                 ToolCancel();
             else if (InputGetState() != InputState::ViewportRight)
-                w->OnToolUpdate(gCurrentToolWidget.widget_index, screenCoords);
+            {
+                if(Config::Get().interface.TouchEnhancements)
+                {
+                    WindowBase* window = windowMgr->FindFromPoint(screenCoords);
+                    WidgetIndex widgetId = windowMgr->FindWidgetFromPoint(*window, screenCoords);
+                    if (window->widgets[widgetId].type == WindowWidgetType::Viewport)
+                        w->OnToolUpdate(gCurrentToolWidget.widget_index, screenCoords);
+                    else
+                        w->OnToolUpdate(gCurrentToolWidget.widget_index, gTouchDragLast);
+                }
+                else
+                {
+                    w->OnToolUpdate(gCurrentToolWidget.widget_index, screenCoords);
+                }
+            }
         }
     }
 
