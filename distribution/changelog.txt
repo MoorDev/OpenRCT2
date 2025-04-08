@@ -1,4 +1,12 @@
-0.4.21 (in development)
+0.4.22 (in development)
+------------------------------------------------------------------------
+- Change: [#23803] Lightning strikes and thunder happen at the same frequency independently of the game speed.
+- Change: [#24135] Compress Emscripten js/wasm files.
+- Fix: [#21919] Non-recolourable cars still show colour picker.
+- Fix: [#23108] Missing pieces on Hypercoaster and Hyper-Twister, even with the ‘all drawable track pieces’ cheat enabled.
+- Fix: [#24013] Failure to load a scenario preview image (minimap) could lead to an uncaught exception error message.
+
+0.4.21 (2025-04-05)
 ------------------------------------------------------------------------
 - Feature: [#22646] New scenario files now contain a minimap image, shown in the scenario selection window.
 - Feature: [#23774] Climates can now be customised using objects.
@@ -7,7 +15,7 @@
 - Improved: [objects#379] Add additional colour schemes to Mine Train.
 - Change: [#23932] The land rights window now checks “Land Owned” by default.
 - Change: [#23936] The ‘guests prefer less/more intense rides’ settings have been turned into a dropdown.
-- Change: [#24059] The ‘select other ride’ button is now available in the track manager.
+- Change: [#24059] The ‘select other ride’ button is now available in the track designs manager.
 - Change: [#24067] [Plugin] Registered menu items are now listed alphabetically.
 - Change: [#24070] Footpath selection menus now show object names on hover using a tooltip.
 - Change: [#24101] Frozen peeps are no longer removed when using the 'remove all guests' cheat.
