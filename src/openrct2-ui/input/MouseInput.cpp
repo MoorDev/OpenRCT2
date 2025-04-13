@@ -264,12 +264,20 @@ namespace OpenRCT2
                     InputScrollDragContinue(screenCoords, w);
                 }
                 break;
+                // ScrollRight Left button Release and Right Release both END. 
             case MouseState::RightRelease:
                 _inputState = InputState::Reset;
                 ContextShowCursor();
                 break;
-            case MouseState::LeftPress:
             case MouseState::LeftRelease:
+                if (Config::Get().interface.TouchEnhancements)
+                {
+                    _inputState = InputState::Reset;
+                    ContextShowCursor();
+                    gTouchDragLast = screenCoords;
+                }
+                break;
+            case MouseState::LeftPress:
             case MouseState::RightPress:
                 // Function only handles right button, so it's the only one relevant
                 break;
@@ -323,7 +331,7 @@ namespace OpenRCT2
                             auto window_map = windowMgr->FindByClass(WindowClass::Map);
                             if (// window_scenery != nullptr
                                 window_loadsave != nullptr
-                                || window_scenarioselect != nullptr
+                                // || window_scenarioselect != nullptr
                                 || window_water != nullptr
                                 || window_land != nullptr
                                 // || window_ridelist != nullptr
@@ -356,8 +364,8 @@ namespace OpenRCT2
                                         break;
                                     // Scroll can some of control bug. ex)Scenary Window. So This is Remove.
                                     // case WindowWidgetType::Scroll:
-                                    // InputScrollDragBegin(screenCoords, w, widgetIndex);
-                                    // break;
+                                        // InputScrollDragBegin(screenCoords, w, widgetIndex);
+                                        // break;
                                     default:
                                         break;
                                 }
@@ -501,7 +509,8 @@ namespace OpenRCT2
                                     gCurrentToolWidget.window_classification, gCurrentToolWidget.window_number);
                                 if (Config::Get().interface.TouchEnhancements)
                                 {
-                                    if (widget->type == WindowWidgetType::Viewport) {
+                                    if (widget->type == WindowWidgetType::Viewport)
+                                    {
                                         gTouchDragLast = screenCoords;
                                     }
                                 }
@@ -1163,7 +1172,6 @@ namespace OpenRCT2
     static void InputWidgetLeft(const ScreenCoordsXY& screenCoords, WindowBase* w, WidgetIndex widgetIndex)
     {
         static bool s_touchover = false;
-        // static ScreenCoordsXY &lastscreencoord;
         WindowClass windowClass = WindowClass::Null;
         rct_windownumber windowNumber = 0;
 
@@ -1250,7 +1258,28 @@ namespace OpenRCT2
                 InputWindowPositionBegin(*w, widgetIndex, screenCoords);
                 break;
             case WindowWidgetType::Scroll:
-                InputScrollBegin(*w, widgetIndex, screenCoords);
+                if (!Config::Get().interface.TouchEnhancements)
+                {
+                    InputScrollBegin(*w, widgetIndex, screenCoords);
+                }
+                else
+                {
+                    if (w == windowMgr->FindByClass(WindowClass::Scenery))
+                    {
+                        InputScrollBegin(*w, widgetIndex, screenCoords);
+                    }
+                    if (gTouchDragLast.x >= screenCoords.x - 60 && gTouchDragLast.x <= screenCoords.x + 60
+                        && gTouchDragLast.y >= screenCoords.y - 60 && gTouchDragLast.y <= screenCoords.y + 60)
+                    {
+                        InputScrollBegin(*w, widgetIndex, gTouchDragLast);
+                        gTouchDragLast.x = 0;
+                        gTouchDragLast.y = 0;
+                    }
+                    else
+                    {
+                        InputScrollDragBegin(screenCoords, w, widgetIndex);
+                    }
+                }
                 break;
             case WindowWidgetType::Empty:
             case WindowWidgetType::LabelCentred:
