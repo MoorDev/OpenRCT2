@@ -151,14 +151,14 @@ namespace OpenRCT2
         }
     };
 
-    constexpr uint8_t kCloseButtonSize = 10;
+    constexpr uint8_t kCloseButtonSize = 10 * 2;
 
-    constexpr int32_t kScrollableRowHeight = 12;
+    constexpr int32_t kScrollableRowHeight = 12 * 3;
     constexpr uint8_t kListRowHeight = 12;
     constexpr uint8_t kTableCellHeight = 12;
-    constexpr uint8_t kButtonFaceHeight = 12;
+    constexpr uint8_t kButtonFaceHeight = 12 * 3;
     constexpr uint8_t kSpinnerHeight = 12;
-    constexpr uint8_t kDropdownHeight = 12;
+    constexpr uint8_t kDropdownHeight = 12 * 2;
 
     constexpr uint16_t kTextInputSize = 1024;
     constexpr uint16_t kTopToolbarHeight = 27;

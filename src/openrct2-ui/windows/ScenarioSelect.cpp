@@ -831,6 +831,12 @@ namespace OpenRCT2::Ui::Windows
             // Scenario title
             int32_t lineHeight = FontGetLineHeight(FontStyle::Medium);
 
+            if (Config::Get().interface.EnlargedUi)
+            {
+                lineHeight += 24;
+                // More Big List
+            }
+
             // 'Completed by' line
             lineHeight += FontGetLineHeight(FontStyle::Small);
 
