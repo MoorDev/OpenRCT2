@@ -216,8 +216,14 @@ namespace OpenRCT2
             if (scroll.flags & VSCROLLBAR_VISIBLE)
                 size -= 11;
             size = std::max(0, scroll.contentWidth - size);
-            // scroll.contentOffsetX = std::min<uint16_t>(std::max(0, scroll.contentOffsetX + differentialCoords.x), size);
-            scroll.contentOffsetX = std::min<uint16_t>(std::max(0, scroll.contentOffsetX - differentialCoords.x / 10), size);
+            if (Config::Get().interface.TouchEnhancements)
+            {
+                scroll.contentOffsetX = std::min<uint16_t>(std::max(0, scroll.contentOffsetX + differentialCoords.x), size);
+            }
+            else
+            {
+                scroll.contentOffsetX = std::min<uint16_t>(std::max(0, scroll.contentOffsetX - differentialCoords.x / 10), size);
+            }
         }
 
         if (scroll.flags & VSCROLLBAR_VISIBLE)
@@ -226,8 +232,14 @@ namespace OpenRCT2
             if (scroll.flags & HSCROLLBAR_VISIBLE)
                 size -= 11;
             size = std::max(0, scroll.contentHeight - size);
-            // scroll.contentOffsetY = std::min<uint16_t>(std::max(0, scroll.contentOffsetY + differentialCoords.y), size);
-            scroll.contentOffsetY = std::min<uint16_t>(std::max(0, scroll.contentOffsetY - differentialCoords.y / 10), size);
+            if (Config::Get().interface.TouchEnhancements)
+            {
+                scroll.contentOffsetY = std::min<uint16_t>(std::max(0, scroll.contentOffsetY + differentialCoords.y), size);
+            }
+            else
+            {
+                scroll.contentOffsetY = std::min<uint16_t>(std::max(0, scroll.contentOffsetY - differentialCoords.y / 10), size);
+            }
         }
 
         WidgetScrollUpdateThumbs(*w, widgetIndex);
