@@ -30,6 +30,7 @@
 #include <openrct2/config/Config.h>
 #include <openrct2/interface/Chat.h>
 #include <openrct2/interface/Cursors.h>
+#include <openrct2/localisation/LocalisationService.h>
 #include <openrct2/platform/Platform.h>
 #include <openrct2/ride/RideData.h>
 #include <openrct2/ui/UiContext.h>
@@ -65,7 +66,7 @@ namespace OpenRCT2
 
     ScreenCoordsXY gInputDragLast;
     static ScreenCoordsXY gTouchDragLast;
-    static uint16_t TouchScope;
+    static int32_t TouchScope;
 
     uint32_t gTooltipCloseTimeout;
     WidgetRef gTooltipWidget;
@@ -218,11 +219,11 @@ namespace OpenRCT2
             size = std::max(0, scroll.contentWidth - size);
             if (Config::Get().interface.TouchEnhancements)
             {
-                scroll.contentOffsetX = std::min<uint16_t>(std::max(0, scroll.contentOffsetX + differentialCoords.x), size);
+                scroll.contentOffsetX = std::min<uint16_t>(std::max(0, scroll.contentOffsetX - differentialCoords.x / 2), size);
             }
             else
             {
-                scroll.contentOffsetX = std::min<uint16_t>(std::max(0, scroll.contentOffsetX - differentialCoords.x / 10), size);
+                scroll.contentOffsetX = std::min<uint16_t>(std::max(0, scroll.contentOffsetX + differentialCoords.x), size);
             }
         }
 
@@ -234,11 +235,11 @@ namespace OpenRCT2
             size = std::max(0, scroll.contentHeight - size);
             if (Config::Get().interface.TouchEnhancements)
             {
-                scroll.contentOffsetY = std::min<uint16_t>(std::max(0, scroll.contentOffsetY + differentialCoords.y), size);
+                scroll.contentOffsetY = std::min<uint16_t>(std::max(0, scroll.contentOffsetY - differentialCoords.y / 2), size);
             }
             else
             {
-                scroll.contentOffsetY = std::min<uint16_t>(std::max(0, scroll.contentOffsetY - differentialCoords.y / 10), size);
+                scroll.contentOffsetY = std::min<uint16_t>(std::max(0, scroll.contentOffsetY + differentialCoords.y), size);
             }
         }
 
@@ -747,7 +748,7 @@ namespace OpenRCT2
 
 #ifndef __EMSCRIPTEN__
         const CursorState* cursorState = ContextGetCursorState();
-        if (cursorState->touch || Config::Get().general.InvertViewportDrag)
+        if (cursorState->touch || Config::Get().general.InvertViewportDrag || Config::Get().interface.TouchEnhancements)
         {
             gInputDragLast = newDragCoords;
         }
@@ -1240,6 +1241,8 @@ namespace OpenRCT2
                                 {
                                     s_touchover = false;
                                     w->OnToolDown(gCurrentToolWidget.widget_index, gTouchDragLast);
+                                    gTouchDragLast.x = -2;
+                                    gTouchDragLast.y = -2;
                                     // This is Bypass gTouchDrag bug.
                                 }
                                 else
@@ -1269,17 +1272,60 @@ namespace OpenRCT2
                 }
                 else
                 {
-                    TouchScope = std::ceil(20 * Config::Get().general.WindowScale);
+                    bool ScrollSelected = false;
                     if (w == windowMgr->FindByClass(WindowClass::Scenery))
                     {
                         InputScrollBegin(*w, widgetIndex, screenCoords);
                     }
-                    if (gTouchDragLast.x >= screenCoords.x - TouchScope && gTouchDragLast.x <= screenCoords.x + TouchScope
-                        && gTouchDragLast.y >= screenCoords.y - TouchScope && gTouchDragLast.y <= screenCoords.y + TouchScope)
+                    else if (w == windowMgr->FindByClass(WindowClass::ConstructRide))
+                    {
+                        InputScrollBegin(*w, widgetIndex, screenCoords);
+                        // NewRide is Modded for TouchInterface.
+                    }                    
+                    else if (w == windowMgr->FindByClass(WindowClass::ScenarioSelect))
+                    {
+                        if (!LocalisationService_UseTrueTypeFont())
+                        {
+                            TouchScope = 24;
+                            // ScenarioSlect.cpp's kTrueFontSize
+                        }
+                        else
+                        {        
+                            // Scenario title
+                            TouchScope = FontGetLineHeight(FontStyle::Medium);               
+                            // 'Completed by' line
+                            TouchScope += FontGetLineHeight(FontStyle::Small);
+                        }
+
+                        if (Config::Get().interface.EnlargedUi)
+                        {
+                            TouchScope += 24;
+                            // From ScenarioSlect.cpp's GetScenarioListItemSize()
+                        } 
+                        TouchScope = std::ceil(TouchScope);
+
+                        // if (gTouchDragLast.y >= screenCoords.y - TouchScope/2 && gTouchDragLast.y <= screenCoords.y + TouchScope/2)
+                        if (gTouchDragLast.y/TouchScope == screenCoords.y/TouchScope)
+                        {
+                            ScrollSelected = true;
+                        }
+                    }
+                    else
+                    {
+                        TouchScope = std::ceil(kScrollableRowHeight);
+                        if (gTouchDragLast.y/TouchScope == screenCoords.y/TouchScope)
+                        {
+                            ScrollSelected = true;
+                        }
+                    }
+
+                    // if (gTouchDragLast.x >= screenCoords.x - TouchScope && gTouchDragLast.x <= screenCoords.x + TouchScope
+                        // && gTouchDragLast.y >= screenCoords.y - TouchScope && gTouchDragLast.y <= screenCoords.y + TouchScope)
+                    if (ScrollSelected)
                     {
                         InputScrollBegin(*w, widgetIndex, gTouchDragLast);
-                        gTouchDragLast.x = 0;
-                        gTouchDragLast.y = 0;
+                        gTouchDragLast.x = -2;
+                        gTouchDragLast.y = -2;
                     }
                     else
                     {
