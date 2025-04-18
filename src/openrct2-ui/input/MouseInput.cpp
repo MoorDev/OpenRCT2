@@ -67,7 +67,6 @@ namespace OpenRCT2
     ScreenCoordsXY gInputDragLast;
     static ScreenCoordsXY gTouchDragLast;
     static int32_t _touchScope;
-    static bool _moveViewportBlock = false;
 
     uint32_t gTooltipCloseTimeout;
     WidgetRef gTooltipWidget;
