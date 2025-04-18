@@ -826,16 +826,7 @@ namespace OpenRCT2::Ui::Windows
         static int32_t GetScenarioListItemSize()
         {
             if (!LocalisationService_UseTrueTypeFont())
-            {
-                if (Config::Get().interface.EnlargedUi)
-                {
-                    return kTrueFontSize + 24;
-                }
-                else
-                {
-                    return kTrueFontSize;
-                }
-            }
+                return kTrueFontSize;
 
             // Scenario title
             int32_t lineHeight = FontGetLineHeight(FontStyle::Medium);
