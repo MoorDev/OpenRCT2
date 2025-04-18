@@ -66,7 +66,8 @@ namespace OpenRCT2
 
     ScreenCoordsXY gInputDragLast;
     static ScreenCoordsXY gTouchDragLast;
-    static int32_t TouchScope;
+    static int32_t _touchScope;
+    static bool _moveViewportBlock = false;
 
     uint32_t gTooltipCloseTimeout;
     WidgetRef gTooltipWidget;
@@ -343,7 +344,7 @@ namespace OpenRCT2
                             auto window_land = windowMgr->FindByClass(WindowClass::Land);
                             if ( window_loadsave != nullptr
                                 || window_water != nullptr
-                                || window_land != nullptr)
+                                /*|| window_land != nullptr*/)
                             {
                                 // Water, Land screen is can not scroll touchscreen (camera is jumping and can not
                                 // control..) So, scroll drag by map window
@@ -1224,11 +1225,11 @@ namespace OpenRCT2
                         {
                             if (s_touchover)
                             {
-                                TouchScope = std::ceil(40 * Config::Get().general.WindowScale);
-                                if (gTouchDragLast.x >= screenCoords.x - TouchScope
-                                    && gTouchDragLast.x <= screenCoords.x + TouchScope
-                                    && gTouchDragLast.y >= screenCoords.y - TouchScope
-                                    && gTouchDragLast.y <= screenCoords.y + TouchScope)
+                                _touchScope = std::ceil(40 * Config::Get().general.WindowScale);
+                                if (gTouchDragLast.x >= screenCoords.x - _touchScope
+                                    && gTouchDragLast.x <= screenCoords.x + _touchScope
+                                    && gTouchDragLast.y >= screenCoords.y - _touchScope
+                                    && gTouchDragLast.y <= screenCoords.y + _touchScope)
                                 {
                                     s_touchover = false;
                                     w->OnToolDown(gCurrentToolWidget.widget_index, gTouchDragLast);
@@ -1282,41 +1283,41 @@ namespace OpenRCT2
                     {
                         if (!LocalisationService_UseTrueTypeFont())
                         {
-                            TouchScope = 24;
+                            _touchScope = 24;
                             // ScenarioSlect.cpp's kTrueFontSize
                         }
                         else
                         {        
                             // Scenario title
-                            TouchScope = FontGetLineHeight(FontStyle::Medium);               
+                            _touchScope = FontGetLineHeight(FontStyle::Medium);               
                             // 'Completed by' line
-                            TouchScope += FontGetLineHeight(FontStyle::Small);
+                            _touchScope += FontGetLineHeight(FontStyle::Small);
                         }
 
                         if (Config::Get().interface.EnlargedUi)
                         {
-                            TouchScope += 24;
+                            _touchScope += 24;
                             // From ScenarioSlect.cpp's GetScenarioListItemSize()
                         } 
-                        TouchScope = std::ceil(TouchScope);
+                        _touchScope = std::ceil(_touchScope);
 
-                        // if (gTouchDragLast.y >= screenCoords.y - TouchScope/2 && gTouchDragLast.y <= screenCoords.y + TouchScope/2)
-                        if (gTouchDragLast.y/TouchScope == screenCoords.y/TouchScope)
+                        // if (gTouchDragLast.y >= screenCoords.y - _touchScope/2 && gTouchDragLast.y <= screenCoords.y + _touchScope/2)
+                        if (gTouchDragLast.y/_touchScope == screenCoords.y/_touchScope)
                         {
                             ScrollSelected = true;
                         }
                     }
                     else
                     {
-                        TouchScope = std::ceil(kScrollableRowHeight);
-                        if (gTouchDragLast.y/TouchScope == screenCoords.y/TouchScope)
+                        _touchScope = std::ceil(kScrollableRowHeight);
+                        if (gTouchDragLast.y/_touchScope == screenCoords.y/_touchScope)
                         {
                             ScrollSelected = true;
                         }
                     }
 
-                    // if (gTouchDragLast.x >= screenCoords.x - TouchScope && gTouchDragLast.x <= screenCoords.x + TouchScope
-                        // && gTouchDragLast.y >= screenCoords.y - TouchScope && gTouchDragLast.y <= screenCoords.y + TouchScope)
+                    // if (gTouchDragLast.x >= screenCoords.x - _touchScope && gTouchDragLast.x <= screenCoords.x + _touchScope
+                        // && gTouchDragLast.y >= screenCoords.y - _touchScope && gTouchDragLast.y <= screenCoords.y + _touchScope)
                     if (ScrollSelected)
                     {
                         InputScrollBegin(*w, widgetIndex, gTouchDragLast);
