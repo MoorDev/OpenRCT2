@@ -1371,31 +1371,9 @@ namespace OpenRCT2
                     w->OnMouseDown(widgetIndex);
                 }
                 break;
-            case WindowWidgetType::Tab:
-                if (Config::Get().interface.TouchEnhancements)
-                {
-                    gTouchDragLast.x = -2;
-                    gTouchDragLast.y = -2;
-                }
-                
-                if (!WidgetIsDisabled(*w, widgetIndex))
-                {
-                    OpenRCT2::Audio::Play(OpenRCT2::Audio::SoundId::Click1, 0, w->windowPos.x + widget.midX());
-
-                    // Set new cursor down widget
-                    gPressedWidget.window_classification = windowClass;
-                    gPressedWidget.window_number = windowNumber;
-                    gPressedWidget.widget_index = widgetIndex;
-                    gInputFlags.set(InputFlag::widgetPressed);
-                    _inputState = InputState::WidgetPressed;
-                    _clickRepeatTicks = gCurrentRealTimeTicks;
-
-                    windowMgr->InvalidateWidgetByNumber(windowClass, windowNumber, widgetIndex);
-                    w->OnMouseDown(widgetIndex);
-                }
-                break;
             case WindowWidgetType::ColourBtn:
             case WindowWidgetType::TrnBtn:
+            case WindowWidgetType::Tab:
             case WindowWidgetType::FlatBtn:
             case WindowWidgetType::Button:
             case WindowWidgetType::TableHeader:
