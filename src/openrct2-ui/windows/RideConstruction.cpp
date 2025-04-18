@@ -338,7 +338,6 @@ namespace OpenRCT2::Ui::Windows
 
         void OnResize() override
         {
-            ResizeFrame();
             WindowRideConstructionUpdateEnabledTrackPieces();
 
             auto currentRide = GetRide(_currentRideIndex);

@@ -1621,11 +1621,6 @@ namespace OpenRCT2::Ui::Windows
             OnMouseDown(WIDX_CONSTRUCT);
         }
 
-        void OnResize() override
-        {
-            ResizeFrame();
-        }
-
 #pragma endregion
     };
 
