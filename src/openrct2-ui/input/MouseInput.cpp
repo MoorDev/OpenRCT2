@@ -338,22 +338,13 @@ namespace OpenRCT2
                         }
                         else
                         {
-                            // auto window_scenery = windowMgr->FindByClass(WindowClass::Scenery);
                             auto window_loadsave = windowMgr->FindByClass(WindowClass::Loadsave);
-                            auto window_scenarioselect = windowMgr->FindByClass(WindowClass::ScenarioSelect);
                             auto window_water = windowMgr->FindByClass(WindowClass::Water);
                             auto window_land = windowMgr->FindByClass(WindowClass::Land);
-                            // auto window_ridelist = windowMgr->FindByClass(WindowClass::RideList);
-                            auto window_map = windowMgr->FindByClass(WindowClass::Map);
-                            if ( // window_scenery != nullptr
-                                window_loadsave != nullptr
-                                // || window_scenarioselect != nullptr
+                            if ( window_loadsave != nullptr
                                 || window_water != nullptr
-                                || window_land != nullptr
-                                // || window_ridelist != nullptr
-                                || window_map != nullptr)
+                                || window_land != nullptr)
                             {
-                                // ContextOpenWindow(WindowClass::Map);
                                 // Water, Land screen is can not scroll touchscreen (camera is jumping and can not
                                 // control..) So, scroll drag by map window
                                 break;
@@ -1281,7 +1272,12 @@ namespace OpenRCT2
                     {
                         InputScrollBegin(*w, widgetIndex, screenCoords);
                         // NewRide is Modded for TouchInterface.
-                    }                    
+                    }
+                    else if (w == windowMgr->FindByClass(WindowClass::Map))
+                    {
+                        InputScrollBegin(*w, widgetIndex, screenCoords);
+                        break;
+                    }                 
                     else if (w == windowMgr->FindByClass(WindowClass::ScenarioSelect))
                     {
                         if (!LocalisationService_UseTrueTypeFont())
