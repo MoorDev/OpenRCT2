@@ -1240,8 +1240,11 @@ namespace OpenRCT2
                                 {
                                     s_touchover = false;
                                     w->OnToolDown(gCurrentToolWidget.widget_index, gTouchDragLast);
-                                    gTouchDragLast.x = -2;
-                                    gTouchDragLast.y = -2;
+                                    if (w != windowMgr->FindByClass(WindowClass::RideConstruction))
+                                    {
+                                        gTouchDragLast.x = -2;
+                                        gTouchDragLast.y = -2;
+                                    }
                                     // This is Bypass gTouchDrag bug.
                                     if (w == windowMgr->FindByClass(WindowClass::Land)
                                         || w == windowMgr->FindByClass(WindowClass::Water))
@@ -1394,8 +1397,11 @@ namespace OpenRCT2
             case WindowWidgetType::Custom:
                 if (Config::Get().interface.TouchEnhancements)
                 {
-                    gTouchDragLast.x = -2;
-                    gTouchDragLast.y = -2;
+                    if (w != windowMgr->FindByClass(WindowClass::RideConstruction))
+                    {
+                        gTouchDragLast.x = -2;
+                        gTouchDragLast.y = -2;
+                    }
                 }
                 if (!WidgetIsDisabled(*w, widgetIndex))
                 {
@@ -1517,6 +1523,7 @@ namespace OpenRCT2
                         w->OnToolUpdate(gCurrentToolWidget.widget_index, screenCoords);
                     else
                         w->OnToolUpdate(gCurrentToolWidget.widget_index, gTouchDragLast);
+                    // This is When ride Construct for See Ride's height or opposite on last LeftRelease Coord.
                 }
                 else
                 {
