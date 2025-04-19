@@ -66,7 +66,8 @@ namespace OpenRCT2
 
     ScreenCoordsXY gInputDragLast;
     static ScreenCoordsXY gTouchDragLast;
-    static int32_t _touchScope;
+    static int32_t s_touchScope;
+    static bool _moveViewport = true;
 
     uint32_t gTooltipCloseTimeout;
     WidgetRef gTooltipWidget;
@@ -321,6 +322,8 @@ namespace OpenRCT2
         {
             case InputState::Reset:
                 WindowTooltipReset(screenCoords);
+                _moveViewport = true;
+                // Almost can moveViewport by LeftButton
                 // fall-through
             case InputState::Normal:
                 switch (state)
@@ -339,14 +342,9 @@ namespace OpenRCT2
                         else
                         {
                             auto window_loadsave = windowMgr->FindByClass(WindowClass::Loadsave);
-                            auto window_water = windowMgr->FindByClass(WindowClass::Water);
-                            auto window_land = windowMgr->FindByClass(WindowClass::Land);
-                            if ( window_loadsave != nullptr
-                                || window_water != nullptr
-                                /*|| window_land != nullptr*/)
+                            if ( window_loadsave != nullptr)
                             {
-                                // Water, Land screen is can not scroll touchscreen (camera is jumping and can not
-                                // control..) So, scroll drag by map window
+                                // If LoadSave window is Opened, Don't Move Viewport.
                                 break;
                             }
 
@@ -366,7 +364,8 @@ namespace OpenRCT2
                                         if (!(gLegacyScene == LegacyScene::trackDesignsManager
                                               || gLegacyScene == LegacyScene::titleSequence))
                                         {
-                                            InputViewportDragBegin(*w);
+                                            if (_moveViewport)
+                                                InputViewportDragBegin(*w);
                                         }
                                         break;
                                     // Scroll can some of control bug. ex)Scenary Window. So This is Remove.
@@ -491,6 +490,15 @@ namespace OpenRCT2
                         {
                             break;
                         }
+                        if (w == windowMgr->FindByClass(WindowClass::Land)
+                            || w == windowMgr->FindByClass(WindowClass::Water))
+                        {
+                            if (_moveViewport)
+                            {
+                                break;
+                            }
+                        }
+
                         w->OnToolDrag(gCurrentToolWidget.widget_index, screenCoords);
                         break;
                     case MouseState::LeftRelease:
@@ -1224,17 +1232,22 @@ namespace OpenRCT2
                         {
                             if (s_touchover)
                             {
-                                _touchScope = std::ceil(40 * Config::Get().general.WindowScale);
-                                if (gTouchDragLast.x >= screenCoords.x - _touchScope
-                                    && gTouchDragLast.x <= screenCoords.x + _touchScope
-                                    && gTouchDragLast.y >= screenCoords.y - _touchScope
-                                    && gTouchDragLast.y <= screenCoords.y + _touchScope)
+                                s_touchScope = std::ceil(40 * Config::Get().general.WindowScale);
+                                if (gTouchDragLast.x >= screenCoords.x - s_touchScope
+                                    && gTouchDragLast.x <= screenCoords.x + s_touchScope
+                                    && gTouchDragLast.y >= screenCoords.y - s_touchScope
+                                    && gTouchDragLast.y <= screenCoords.y + s_touchScope)
                                 {
                                     s_touchover = false;
                                     w->OnToolDown(gCurrentToolWidget.widget_index, gTouchDragLast);
                                     gTouchDragLast.x = -2;
                                     gTouchDragLast.y = -2;
                                     // This is Bypass gTouchDrag bug.
+                                    if (w == windowMgr->FindByClass(WindowClass::Land)
+                                        || w == windowMgr->FindByClass(WindowClass::Water))
+                                        {
+                                            _moveViewport = false;
+                                        }
                                 }
                                 else
                                 {
@@ -1282,41 +1295,41 @@ namespace OpenRCT2
                     {
                         if (!LocalisationService_UseTrueTypeFont())
                         {
-                            _touchScope = 24;
+                            s_touchScope = 24;
                             // ScenarioSlect.cpp's kTrueFontSize
                         }
                         else
                         {        
                             // Scenario title
-                            _touchScope = FontGetLineHeight(FontStyle::Medium);               
+                            s_touchScope = FontGetLineHeight(FontStyle::Medium);               
                             // 'Completed by' line
-                            _touchScope += FontGetLineHeight(FontStyle::Small);
+                            s_touchScope += FontGetLineHeight(FontStyle::Small);
                         }
 
                         if (Config::Get().interface.EnlargedUi)
                         {
-                            _touchScope += 24;
+                            s_touchScope += 24;
                             // From ScenarioSlect.cpp's GetScenarioListItemSize()
                         } 
-                        _touchScope = std::ceil(_touchScope);
+                        s_touchScope = std::ceil(s_touchScope);
 
-                        // if (gTouchDragLast.y >= screenCoords.y - _touchScope/2 && gTouchDragLast.y <= screenCoords.y + _touchScope/2)
-                        if (gTouchDragLast.y/_touchScope == screenCoords.y/_touchScope)
+                        // if (gTouchDragLast.y >= screenCoords.y - s_touchScope/2 && gTouchDragLast.y <= screenCoords.y + s_touchScope/2)
+                        if (gTouchDragLast.y/s_touchScope == screenCoords.y/s_touchScope)
                         {
                             ScrollSelected = true;
                         }
                     }
                     else
                     {
-                        _touchScope = std::ceil(kScrollableRowHeight);
-                        if (gTouchDragLast.y/_touchScope == screenCoords.y/_touchScope)
+                        s_touchScope = std::ceil(kScrollableRowHeight);
+                        if (gTouchDragLast.y/s_touchScope == screenCoords.y/s_touchScope)
                         {
                             ScrollSelected = true;
                         }
                     }
 
-                    // if (gTouchDragLast.x >= screenCoords.x - _touchScope && gTouchDragLast.x <= screenCoords.x + _touchScope
-                        // && gTouchDragLast.y >= screenCoords.y - _touchScope && gTouchDragLast.y <= screenCoords.y + _touchScope)
+                    // if (gTouchDragLast.x >= screenCoords.x - s_touchScope && gTouchDragLast.x <= screenCoords.x + s_touchScope
+                        // && gTouchDragLast.y >= screenCoords.y - s_touchScope && gTouchDragLast.y <= screenCoords.y + s_touchScope)
                     if (ScrollSelected)
                     {
                         InputScrollBegin(*w, widgetIndex, gTouchDragLast);
