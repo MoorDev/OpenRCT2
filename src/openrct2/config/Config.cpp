@@ -46,8 +46,10 @@ static constexpr bool kWindowButtonsOnTheLeftDefault = false;
 #endif
 #ifdef __ANDROID__
 static constexpr bool kEnlargedUiDefault = true;
+static constexpr bool kEdgeScrollDefault = false;
 #else
 static constexpr bool kEnlargedUiDefault = false;
+static constexpr bool kEdgeScrollDefault = true;
 #endif
 
 namespace OpenRCT2::Config
@@ -172,7 +174,7 @@ namespace OpenRCT2::Config
             model->CustomCurrencyAffix = reader->GetEnum<CurrencyAffix>(
                 "custom_currency_affix", CurrencyAffix::Suffix, Enum_CurrencySymbolAffix);
             model->CustomCurrencySymbol = reader->GetString("custom_currency_symbol", "Ctm");
-            model->EdgeScrolling = reader->GetBoolean("edge_scrolling", true);
+            model->EdgeScrolling = reader->GetBoolean("edge_scrolling", kEdgeScrollDefault);
             model->EdgeScrollingSpeed = reader->GetInt32("edge_scrolling_speed", 12);
             model->FullscreenMode = reader->GetInt32("fullscreen_mode", 0);
             model->FullscreenHeight = reader->GetInt32("fullscreen_height", -1);
