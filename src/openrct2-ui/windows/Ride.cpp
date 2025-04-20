@@ -2433,8 +2433,9 @@ namespace OpenRCT2::Ui::Windows
                 widgets[WIDX_SIMULATE_LIGHT].type = WindowWidgetType::Empty;
                 widgets[WIDX_TEST_LIGHT].type = WindowWidgetType::Empty;
                 widgets[WIDX_OPEN_LIGHT].type = WindowWidgetType::Empty;
-                widgetHeight = 46;
+                widgetHeight = widgets[WIDX_PAGE_BACKGROUND].top + 3;
             }
+
             for (i = WIDX_CLOSE_LIGHT; i <= WIDX_OPEN_LIGHT; i++)
             {
                 widgets[i].left = width - 20;
@@ -5682,7 +5683,7 @@ namespace OpenRCT2::Ui::Windows
                         {
                             // Holes
                             ft = Formatter();
-                            ft.Add<uint16_t>(ride->holes);
+                            ft.Add<uint16_t>(ride->numHoles);
                             DrawTextBasic(dpi, screenCoords, STR_HOLES, ft);
                             screenCoords.y += kListRowHeight;
                         }
@@ -5817,7 +5818,7 @@ namespace OpenRCT2::Ui::Windows
                         if (ride->getRideTypeDescriptor().HasFlag(RtdFlag::hasDrops))
                         {
                             ft = Formatter();
-                            ft.Add<uint16_t>(ride->getNumDrops());
+                            ft.Add<uint16_t>(ride->numDrops);
                             DrawTextBasic(dpi, screenCoords, STR_DROPS, ft);
                             screenCoords.y += kListRowHeight;
 
@@ -5832,10 +5833,10 @@ namespace OpenRCT2::Ui::Windows
                         if (ride->getRideTypeDescriptor().specialType != RtdSpecialType::miniGolf)
                         {
                             // Inversions
-                            if (ride->inversions != 0)
+                            if (ride->numInversions != 0)
                             {
                                 ft = Formatter();
-                                ft.Add<uint16_t>(ride->inversions);
+                                ft.Add<uint16_t>(ride->numInversions);
                                 DrawTextBasic(dpi, screenCoords, STR_INVERSIONS, ft);
                                 screenCoords.y += kListRowHeight;
                             }
