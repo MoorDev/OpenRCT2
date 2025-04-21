@@ -482,7 +482,6 @@ namespace OpenRCT2::Ui::Windows
                     PreSelected.Type = kRideTypeNull;
                     PreSelected.EntryIndex = kObjectEntryIndexNull;
                 }
-
             }
 
             _newRideVars.SelectedRide = item;
