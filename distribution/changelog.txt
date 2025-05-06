@@ -1,4 +1,7 @@
-0.4.22 (in development)
+0.4.23 (in development)
+------------------------------------------------------------------------
+
+0.4.22 (2025-05-04)
 ------------------------------------------------------------------------
 - Feature: [#24206] [Plugin] Add APIs for breaking down rides, reading the current breakdown, and for fixing broken down rides.
 - Improved: [#20073] The OpenGL drawing engine now supports screen invalidation which avoids the redrawing of unchanged regions.
@@ -8,10 +11,12 @@
 - Improved: [#23982] The scenario objective window has been merged into the scenario options window.
 - Improved: [#24233] RCT Classic+ from Apple Arcade can now be used as the source game, and is detected automatically.
 - Improved: [#24260] Better performance on parks that have a lot of Guests and Entertainers.
+- Improved: [#24319] RCT Classic installs via Steam are now detected automatically on Windows.
 - Change: [#23803] Lightning strikes and thunder now happen at the same frequency independently of the game speed.
 - Change: [#23857] Replace display options tab with custom sprites.
 - Change: [#24069] [Plugin] Plugins are now available in the scenario editor and track designer.
 - Change: [#24135] Compress Emscripten js/wasm files.
+- Change: [#24194] The advanced options tab has been reworked to make it easier to find the RCT1 path setting.
 - Change: [#24235] Small changes to RCT1 theme.
 - Change: [#24236] Controls and Interface options now both have their own tabs in the Options window.
 - Change: [#24308] “Software” and “Software (hardware display)” renderers have been merged into a single “Software” renderer.
