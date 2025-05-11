@@ -35,7 +35,7 @@ namespace OpenRCT2::Ui::Windows
 {
     static constexpr StringId WINDOW_TITLE = STR_LAND;
     static constexpr int32_t WH = 160;
-    static constexpr int32_t WW = 98;
+    static constexpr int32_t WW = 98 + 64;
 
     enum WindowLandWidgetIdx : WidgetIndex
     {
@@ -49,6 +49,8 @@ namespace OpenRCT2::Ui::Windows
         WIDX_INCREMENT,
         WIDX_FLOOR,
         WIDX_WALL,
+        WIDX_DECREMENT_BTN,
+        WIDX_INCREMENT_BTN,
     };
 
     // clang-format off
@@ -56,11 +58,13 @@ namespace OpenRCT2::Ui::Windows
         WINDOW_SHIM(WINDOW_TITLE, WW, WH),
         MakeWidget     ({19,  19}, {24, 24}, WindowWidgetType::FlatBtn, WindowColour::Secondary, ImageId(SPR_RIDE_CONSTRUCTION_SLOPE_UP), STR_ENABLE_MOUNTAIN_TOOL_TIP), // mountain mode
         MakeWidget     ({55,  19}, {24, 24}, WindowWidgetType::FlatBtn, WindowColour::Secondary, ImageId(SPR_PAINTBRUSH),                 STR_DISABLE_ELEVATION),        // paint mode
-        MakeWidget     ({27,  48}, {44, 32}, WindowWidgetType::ImgBtn,  WindowColour::Primary  , ImageId(SPR_LAND_TOOL_SIZE_0),           kStringIdNone),                     // preview box
-        MakeRemapWidget({28,  49}, {16, 16}, WindowWidgetType::TrnBtn,  WindowColour::Secondary, SPR_LAND_TOOL_DECREASE,         STR_ADJUST_SMALLER_LAND_TIP),  // decrement size
-        MakeRemapWidget({54,  63}, {16, 16}, WindowWidgetType::TrnBtn,  WindowColour::Secondary, SPR_LAND_TOOL_INCREASE,         STR_ADJUST_LARGER_LAND_TIP),   // increment size
+        MakeWidget     ({27 +32,  48}, {44, 32}, WindowWidgetType::ImgBtn,  WindowColour::Primary  , ImageId(SPR_LAND_TOOL_SIZE_0),           kStringIdNone),                     // preview box
+        MakeRemapWidget({28 +32,  49}, {16, 16}, WindowWidgetType::TrnBtn,  WindowColour::Secondary, SPR_LAND_TOOL_DECREASE,         STR_ADJUST_SMALLER_LAND_TIP),  // decrement size
+        MakeRemapWidget({54 +32,  63}, {16, 16}, WindowWidgetType::TrnBtn,  WindowColour::Secondary, SPR_LAND_TOOL_INCREASE,         STR_ADJUST_LARGER_LAND_TIP),   // increment size
         MakeWidget     ({ 2, 106}, {47, 36}, WindowWidgetType::FlatBtn, WindowColour::Secondary, 0xFFFFFFFF,                     STR_CHANGE_BASE_LAND_TIP),     // floor texture
         MakeWidget     ({49, 106}, {47, 36}, WindowWidgetType::FlatBtn, WindowColour::Secondary, 0xFFFFFFFF,                     STR_CHANGE_VERTICAL_LAND_TIP), // wall texture
+        MakeWidget     ({14, 48}, {32, 32}, WindowWidgetType::ImgBtn, WindowColour::Tertiary, ImageId(SPR_LAND_TOOL_DECREASE), STR_ADJUST_SMALLER_WATER_TIP), // decrement size
+        MakeWidget     ({76+27+14, 48}, {32, 32}, WindowWidgetType::ImgBtn, WindowColour::Tertiary, ImageId(SPR_LAND_TOOL_INCREASE), STR_ADJUST_LARGER_WATER_TIP),  // increment size
     };
     // clang-format on
 
@@ -147,6 +151,7 @@ namespace OpenRCT2::Ui::Windows
                 case WIDX_PREVIEW:
                     InputSize();
                     break;
+                case WIDX_DECREMENT_BTN:
                 case WIDX_DECREMENT:
                     // Decrement land tool size
                     gLandToolSize = std::max<uint16_t>(kLandToolMinimumSize, gLandToolSize - 1);
@@ -154,6 +159,7 @@ namespace OpenRCT2::Ui::Windows
                     // Invalidate the window
                     Invalidate();
                     break;
+                case WIDX_INCREMENT_BTN:
                 case WIDX_INCREMENT:
                     // Increment land tool size
                     gLandToolSize = std::min<uint16_t>(kLandToolMaximumSize, gLandToolSize + 1);

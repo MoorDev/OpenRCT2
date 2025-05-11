@@ -469,7 +469,7 @@ namespace OpenRCT2::Ui::Windows
                     if (widgetIndex >= WIDX_SCENERY_TAB_CONTENT_PANEL)
                     {
                         _hoverCounter++;
-                        if (_hoverCounter < 8)
+                        if (_hoverCounter < 8 || Config::Get().interface.TouchEnhancements)
                         {
                             if (InputGetState() != InputState::ScrollLeft)
                             {

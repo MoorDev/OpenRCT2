@@ -87,8 +87,8 @@ namespace OpenRCT2::Ui::Windows
 #pragma region Measurements
 
     static constexpr StringId WINDOW_TITLE = STR_FOOTPATHS;
-    static constexpr int32_t WH_WINDOW = 421-39;
-    static constexpr int32_t WW_WINDOW = 106+47;
+    static constexpr int32_t WH_WINDOW = 421 - 39;
+    static constexpr int32_t WW_WINDOW = 106 + 47;
 
 #pragma endregion
 

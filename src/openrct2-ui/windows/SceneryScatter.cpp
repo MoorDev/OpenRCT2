@@ -30,7 +30,9 @@ namespace OpenRCT2::Ui::Windows
         WIDX_DENSITY,
         WIDX_DENSITY_LOW,
         WIDX_DENSITY_MEDIUM,
-        WIDX_DENSITY_HIGH
+        WIDX_DENSITY_HIGH,
+        WIDX_DECREMENT_BTN,
+        WIDX_INCREMENT_BTN
     };
 
     bool gWindowSceneryScatterEnabled = false;
@@ -39,16 +41,18 @@ namespace OpenRCT2::Ui::Windows
 
     // clang-format off
     static constexpr Widget _sceneryScatterWidgets[] = {
-        WINDOW_SHIM(STR_SCENERY_SCATTER, 86, 100),
+        WINDOW_SHIM(STR_SCENERY_SCATTER, 86 + 64, 100),
 
-        MakeWidget     ({20, 17}, {44,  32}, WindowWidgetType::ImgBtn,   WindowColour::Secondary, ImageId(SPR_LAND_TOOL_SIZE_0)                                 ), // preview box
-        MakeRemapWidget({21, 18}, {16,  16}, WindowWidgetType::TrnBtn,   WindowColour::Secondary, SPR_LAND_TOOL_DECREASE,        STR_ADJUST_SMALLER_LAND_TIP    ), // decrement size
-        MakeRemapWidget({47, 32}, {16,  16}, WindowWidgetType::TrnBtn,   WindowColour::Secondary, SPR_LAND_TOOL_INCREASE,        STR_ADJUST_LARGER_LAND_TIP     ), // increment size
+        MakeWidget     ({20+32, 17}, {44,  32}, WindowWidgetType::ImgBtn,   WindowColour::Secondary, ImageId(SPR_LAND_TOOL_SIZE_0)                                 ), // preview box
+        MakeRemapWidget({21+32, 18}, {16,  16}, WindowWidgetType::TrnBtn,   WindowColour::Secondary, SPR_LAND_TOOL_DECREASE,        STR_ADJUST_SMALLER_LAND_TIP    ), // decrement size
+        MakeRemapWidget({47+32, 32}, {16,  16}, WindowWidgetType::TrnBtn,   WindowColour::Secondary, SPR_LAND_TOOL_INCREASE,        STR_ADJUST_LARGER_LAND_TIP     ), // increment size
 
         MakeWidget     ({ 3, 55}, {80,  42}, WindowWidgetType::Groupbox, WindowColour::Secondary, STR_SCATTER_TOOL_DENSITY                                      ),
         MakeRemapWidget({ 7, 68}, {24,  24}, WindowWidgetType::FlatBtn,  WindowColour::Secondary, SPR_G2_SCENERY_SCATTER_LOW,    STR_SCATTER_TOOL_DENSITY_LOW   ), // low amount
         MakeRemapWidget({31, 68}, {24,  24}, WindowWidgetType::FlatBtn,  WindowColour::Secondary, SPR_G2_SCENERY_SCATTER_MEDIUM, STR_SCATTER_TOOL_DENSITY_MEDIUM), // medium amount
         MakeRemapWidget({55, 68}, {24,  24}, WindowWidgetType::FlatBtn,  WindowColour::Secondary, SPR_G2_SCENERY_SCATTER_HIGH,   STR_SCATTER_TOOL_DENSITY_HIGH  ), // high amount
+        MakeWidget     ({10, 17}, {32, 32}, WindowWidgetType::ImgBtn, WindowColour::Tertiary, ImageId(SPR_LAND_TOOL_DECREASE), STR_ADJUST_SMALLER_WATER_TIP), // decrement size
+        MakeWidget     ({76+20+10, 17}, {32, 32}, WindowWidgetType::ImgBtn, WindowColour::Tertiary, ImageId(SPR_LAND_TOOL_INCREASE), STR_ADJUST_LARGER_WATER_TIP),  // increment size
     };
     // clang-format on
 
@@ -120,12 +124,13 @@ namespace OpenRCT2::Ui::Windows
         {
             switch (widgetIndex)
             {
+                case WIDX_DECREMENT_BTN:
                 case WIDX_DECREMENT:
                     // Decrement land tool size, if it stays within the limit
                     gWindowSceneryScatterSize = std::max<uint16_t>(kLandToolMinimumSize, gWindowSceneryScatterSize - 1);
                     Invalidate();
                     break;
-
+                case WIDX_INCREMENT_BTN:
                 case WIDX_INCREMENT:
                     // Increment land tool size, if it stays within the limit
                     gWindowSceneryScatterSize = std::min<uint16_t>(kLandToolMaximumSize, gWindowSceneryScatterSize + 1);

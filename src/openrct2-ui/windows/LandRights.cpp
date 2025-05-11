@@ -29,7 +29,7 @@
 
 namespace OpenRCT2::Ui::Windows
 {
-    static constexpr ScreenSize kInGameSize = { 94, 94 };
+    static constexpr ScreenSize kInGameSize = { 94 + 64, 94 };
     static constexpr ScreenSize kEditorSize = { 280, 104 };
 
     static constexpr StringId WINDOW_TITLE = STR_LAND_RIGHTS;
@@ -55,14 +55,17 @@ namespace OpenRCT2::Ui::Windows
         WIDX_CONSTRUCTION_RIGHTS_OWNED_CHECKBOX,
         WIDX_CONSTRUCTION_RIGHTS_SALE_CHECKBOX,
         WIDX_UNOWNED_LAND_CHECKBOX,
+
+        WIDX_DECREMENT_BTN,
+        WIDX_INCREMENT_BTN,
     };
 
     // clang-format off
     static constexpr Widget window_land_rights_widgets[] = {
         WINDOW_SHIM(WINDOW_TITLE, WW, WH),
-        MakeWidget     ({ 27, 17}, { 44, 32}, WindowWidgetType::ImgBtn, WindowColour::Primary, ImageId(SPR_LAND_TOOL_SIZE_0)                                                   ), // preview box
-        MakeRemapWidget({ 28, 18}, { 16, 16}, WindowWidgetType::TrnBtn, WindowColour::Primary, SPR_LAND_TOOL_DECREASE,          STR_ADJUST_SMALLER_LAND_RIGHTS_TIP             ), // decrement size
-        MakeRemapWidget({ 54, 32}, { 16, 16}, WindowWidgetType::TrnBtn, WindowColour::Primary, SPR_LAND_TOOL_INCREASE,          STR_ADJUST_LARGER_LAND_RIGHTS_TIP              ), // increment size
+        MakeWidget     ({ 27 +32, 17}, { 44, 32}, WindowWidgetType::ImgBtn, WindowColour::Primary, ImageId(SPR_LAND_TOOL_SIZE_0)                                                   ), // preview box
+        MakeRemapWidget({ 28 +32, 18}, { 16, 16}, WindowWidgetType::TrnBtn, WindowColour::Primary, SPR_LAND_TOOL_DECREASE,          STR_ADJUST_SMALLER_LAND_RIGHTS_TIP             ), // decrement size
+        MakeRemapWidget({ 54 +32, 32}, { 16, 16}, WindowWidgetType::TrnBtn, WindowColour::Primary, SPR_LAND_TOOL_INCREASE,          STR_ADJUST_LARGER_LAND_RIGHTS_TIP              ), // increment size
         MakeRemapWidget({ 22, 53}, { 24, 24}, WindowWidgetType::ImgBtn, WindowColour::Primary, SPR_BUY_LAND_RIGHTS,             STR_BUY_LAND_RIGHTS_TIP                        ), // land rights
         MakeRemapWidget({ 52, 53}, { 24, 24}, WindowWidgetType::ImgBtn, WindowColour::Primary, SPR_BUY_CONSTRUCTION_RIGHTS,     STR_BUY_CONSTRUCTION_RIGHTS_TIP                ), // construction rights
         MakeWidget     ({100, 22}, {170, 12}, WindowWidgetType::Empty,  WindowColour::Primary, STR_LAND_OWNED,                  STR_SET_LAND_TO_BE_OWNED_TIP                   ),
@@ -70,6 +73,9 @@ namespace OpenRCT2::Ui::Windows
         MakeWidget     ({100, 54}, {170, 12}, WindowWidgetType::Empty,  WindowColour::Primary, STR_CONSTRUCTION_RIGHTS_OWNED,   STR_SET_CONSTRUCTION_RIGHTS_TO_BE_OWNED_TIP    ),
         MakeWidget     ({100, 70}, {170, 12}, WindowWidgetType::Empty,  WindowColour::Primary, STR_CONSTRUCTION_RIGHTS_SALE,    STR_SET_CONSTRUCTION_RIGHTS_TO_BE_AVAILABLE_TIP),
         MakeWidget     ({100, 86}, {170, 12}, WindowWidgetType::Empty,  WindowColour::Primary, STR_LAND_NOT_OWNED,              STR_SET_LAND_TO_BE_NOT_OWNED_TIP               ),
+        MakeWidget     ({14, 17}, {32, 32}, WindowWidgetType::ImgBtn, WindowColour::Tertiary, ImageId(SPR_LAND_TOOL_DECREASE), STR_ADJUST_SMALLER_WATER_TIP), // decrement size
+        MakeWidget     ({76+27+14, 17}, {32, 32}, WindowWidgetType::ImgBtn, WindowColour::Tertiary, ImageId(SPR_LAND_TOOL_INCREASE), STR_ADJUST_LARGER_WATER_TIP),  // increment size
+        
     };
     // clang-format on
 
@@ -210,6 +216,7 @@ namespace OpenRCT2::Ui::Windows
         {
             switch (widgetIndex)
             {
+                case WIDX_DECREMENT_BTN:
                 case WIDX_DECREMENT:
                     // Decrement land rights tool size
                     gLandToolSize = std::max<uint16_t>(kLandToolMinimumSize, gLandToolSize - 1);
@@ -217,6 +224,7 @@ namespace OpenRCT2::Ui::Windows
                     // Invalidate the window
                     Invalidate();
                     break;
+                case WIDX_INCREMENT_BTN:
                 case WIDX_INCREMENT:
                     // Decrement land rights tool size
                     gLandToolSize = std::min<uint16_t>(kLandToolMaximumSize, gLandToolSize + 1);

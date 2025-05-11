@@ -34,11 +34,13 @@ namespace OpenRCT2::Ui::Windows
         WIDX_INCREMENT,
         WIDX_SMALL_SCENERY,
         WIDX_LARGE_SCENERY,
-        WIDX_FOOTPATH
+        WIDX_FOOTPATH,
+        WIDX_DECREMENT_BTN,
+        WIDX_INCREMENT_BTN
     };
 
     static constexpr StringId WINDOW_TITLE = STR_CLEAR_SCENERY;
-    static constexpr int32_t WW = 98;
+    static constexpr int32_t WW = 98 + 64;
     static constexpr int32_t WH = 94;
 
     static constexpr ScreenSize CLEAR_SCENERY_BUTTON = { 24, 24 };
@@ -46,13 +48,13 @@ namespace OpenRCT2::Ui::Windows
     static constexpr Widget window_clear_scenery_widgets[] = {
         WINDOW_SHIM(WINDOW_TITLE, WW, WH),
         MakeWidget(
-            { 27, 17 }, { 44, 32 }, WindowWidgetType::ImgBtn, WindowColour::Primary, SPR_LAND_TOOL_SIZE_0,
+            { 27 + 32, 17 }, { 44, 32 }, WindowWidgetType::ImgBtn, WindowColour::Primary, SPR_LAND_TOOL_SIZE_0,
             kStringIdNone), // preview box
         MakeRemapWidget(
-            { 28, 18 }, { 16, 16 }, WindowWidgetType::TrnBtn, WindowColour::Secondary, SPR_LAND_TOOL_DECREASE,
+            { 28 + 32, 18 }, { 16, 16 }, WindowWidgetType::TrnBtn, WindowColour::Secondary, SPR_LAND_TOOL_DECREASE,
             STR_ADJUST_SMALLER_LAND_TIP), // decrement size
         MakeRemapWidget(
-            { 54, 32 }, { 16, 16 }, WindowWidgetType::TrnBtn, WindowColour::Secondary, SPR_LAND_TOOL_INCREASE,
+            { 54 + 32, 32 }, { 16, 16 }, WindowWidgetType::TrnBtn, WindowColour::Secondary, SPR_LAND_TOOL_INCREASE,
             STR_ADJUST_LARGER_LAND_TIP), // increment size
         MakeRemapWidget(
             { 7, 53 }, CLEAR_SCENERY_BUTTON, WindowWidgetType::FlatBtn, WindowColour::Secondary, SPR_G2_BUTTON_TREES,
@@ -63,6 +65,12 @@ namespace OpenRCT2::Ui::Windows
         MakeRemapWidget(
             { 67, 53 }, CLEAR_SCENERY_BUTTON, WindowWidgetType::FlatBtn, WindowColour::Secondary, SPR_G2_BUTTON_FOOTPATH,
             STR_CLEAR_SCENERY_REMOVE_FOOTPATHS_TIP), // footpaths
+        MakeWidget(
+            { 14, 17 }, { 32, 32 }, WindowWidgetType::ImgBtn, WindowColour::Tertiary, ImageId(SPR_LAND_TOOL_DECREASE),
+            STR_ADJUST_SMALLER_WATER_TIP), // decrement size
+        MakeWidget(
+            { 76 + 28 + 14, 17 }, { 32, 32 }, WindowWidgetType::ImgBtn, WindowColour::Tertiary, ImageId(SPR_LAND_TOOL_INCREASE),
+            STR_ADJUST_LARGER_WATER_TIP), // increment size
     };
 
     class CleanSceneryWindow final : public Window
@@ -128,6 +136,7 @@ namespace OpenRCT2::Ui::Windows
         {
             switch (widgetIndex)
             {
+                case WIDX_DECREMENT_BTN:
                 case WIDX_DECREMENT:
                     // Decrement land tool size, if it stays within the limit
                     gLandToolSize = std::max<uint16_t>(kLandToolMinimumSize, gLandToolSize - 1);
@@ -135,6 +144,7 @@ namespace OpenRCT2::Ui::Windows
                     // Invalidate the window
                     Invalidate();
                     break;
+                case WIDX_INCREMENT_BTN:
                 case WIDX_INCREMENT:
                     // Increment land tool size, if it stays within the limit
                     gLandToolSize = std::min<uint16_t>(kLandToolMaximumSize, gLandToolSize + 1);

@@ -27,7 +27,7 @@ namespace OpenRCT2::Ui::Windows
 {
     static constexpr StringId WINDOW_TITLE = STR_WATER;
     static constexpr int32_t WH = 77;
-    static constexpr int32_t WW = 76;
+    static constexpr int32_t WW = 76 + 64;
 
     enum WindowWaterWidgetIdx : WidgetIndex
     {
@@ -36,15 +36,19 @@ namespace OpenRCT2::Ui::Windows
         WIDX_CLOSE,
         WIDX_PREVIEW,
         WIDX_DECREMENT,
-        WIDX_INCREMENT
+        WIDX_INCREMENT,
+        WIDX_DECREMENT_BTN,
+        WIDX_INCREMENT_BTN
     };
 
     // clang-format off
     static constexpr Widget _waterWidgets[] = {
         WINDOW_SHIM(WINDOW_TITLE, WW, WH),
-        MakeWidget     ({16, 17}, {44, 32}, WindowWidgetType::ImgBtn, WindowColour::Primary , ImageId(SPR_LAND_TOOL_SIZE_0),   kStringIdNone),            // preview box
-        MakeRemapWidget({17, 18}, {16, 16}, WindowWidgetType::TrnBtn, WindowColour::Tertiary, SPR_LAND_TOOL_DECREASE, STR_ADJUST_SMALLER_WATER_TIP), // decrement size
-        MakeRemapWidget({43, 32}, {16, 16}, WindowWidgetType::TrnBtn, WindowColour::Tertiary, SPR_LAND_TOOL_INCREASE, STR_ADJUST_LARGER_WATER_TIP),  // increment size
+        MakeWidget     ({16+32, 17}, {44, 32}, WindowWidgetType::ImgBtn, WindowColour::Primary , ImageId(SPR_LAND_TOOL_SIZE_0),   kStringIdNone),            // preview box
+        MakeRemapWidget({17+32, 18}, {16, 16}, WindowWidgetType::TrnBtn, WindowColour::Tertiary, SPR_LAND_TOOL_DECREASE, STR_ADJUST_SMALLER_WATER_TIP), // decrement size
+        MakeRemapWidget({43+32, 32}, {16, 16}, WindowWidgetType::TrnBtn, WindowColour::Tertiary, SPR_LAND_TOOL_INCREASE, STR_ADJUST_LARGER_WATER_TIP),  // increment size
+        MakeWidget     ({8, 17}, {32, 32}, WindowWidgetType::ImgBtn, WindowColour::Tertiary, ImageId(SPR_LAND_TOOL_DECREASE), STR_ADJUST_SMALLER_WATER_TIP), // decrement size
+        MakeWidget     ({76+16+8, 17}, {32, 32}, WindowWidgetType::ImgBtn, WindowColour::Tertiary, ImageId(SPR_LAND_TOOL_INCREASE), STR_ADJUST_LARGER_WATER_TIP),  // increment size
     };
     // clang-format on
 
@@ -92,6 +96,7 @@ namespace OpenRCT2::Ui::Windows
         {
             switch (widgetIndex)
             {
+                case WIDX_DECREMENT_BTN:
                 case WIDX_DECREMENT:
                     // Decrement land tool size
                     gLandToolSize = std::max<uint16_t>(kLandToolMinimumSize, gLandToolSize - 1);
@@ -99,6 +104,7 @@ namespace OpenRCT2::Ui::Windows
                     // Invalidate the window
                     Invalidate();
                     break;
+                case WIDX_INCREMENT_BTN:
                 case WIDX_INCREMENT:
                     // Increment land tool size
                     gLandToolSize = std::min<uint16_t>(kLandToolMaximumSize, gLandToolSize + 1);
