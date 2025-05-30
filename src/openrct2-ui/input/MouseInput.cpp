@@ -322,7 +322,8 @@ namespace OpenRCT2
         {
             case InputState::Reset:
                 WindowTooltipReset(screenCoords);
-                // fall-through
+                _moveViewport = true;
+                [[fallthrough]];
             case InputState::Normal:
                 switch (state)
                 {
