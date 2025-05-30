@@ -322,8 +322,6 @@ namespace OpenRCT2
         {
             case InputState::Reset:
                 WindowTooltipReset(screenCoords);
-                _moveViewport = true;
-                // Almost can moveViewport by LeftButton
                 // fall-through
             case InputState::Normal:
                 switch (state)
